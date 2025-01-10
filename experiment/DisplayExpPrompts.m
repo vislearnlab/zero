@@ -4,8 +4,8 @@
 function DisplayExpPrompts(subID)
 
 % Generate and save trial order
-
-dateStrings = char(datetime);
+startDateTime = datetime;
+dateStrings = char(startDateTime);
 fileID = ['/Users/visuallearninglab/Library/CloudStorage/GoogleDrive-amhaskins@ucsd.edu/My Drive/Projects/zero/stim-orders/'...
     'zeroLog-' subID '-' extractBefore(dateStrings,' ')];
 
@@ -15,9 +15,8 @@ objectNameSet = {'stethoscope', 'french press', 'shoe horn', 'fishing reel', ...
 
 thisOrder = randperm(length(objectNameSet));
 
-printList = [extractBefore(dateStrings, ' '); extractAfter(dateStrings, ' '); ' '; objectNameSet(thisOrder)'];
-T = table(printList,'VariableNames',string(subID));
-writetable(T,fileID,'Delimiter',',')
+printList = [extractBefore(dateStrings, ' '); 'experiment start ' ; ' '; objectNameSet(thisOrder)'];
+timeList = {' '; extractAfter(dateStrings, ' '); ' '};
 
 
 % Display to participant
@@ -29,6 +28,7 @@ set(f,'ToolBar','none')
 set(f,'Color','white')
 
 for trialNum = 1:length(objectNameSet)
+    timeList = [timeList; extractAfter(char(datetime),' ')]; % log the time they press for prompt in case we need this to quickly split videos
     th = text(1,1,'+','FontSize',100,'HorizontalAlignment','center','VerticalAlignment','middle') ;
     set(gca,'visible','off','xlim',[0 2],'ylim',[0 2],'Position',[0 0 1 1]) ;
 
@@ -59,3 +59,7 @@ for trialNum = 1:length(objectNameSet)
     
     delete(th) % delete object name
 end
+close all;
+
+T = table(printList,timeList,'VariableNames',{subID,'timestamp'});
+writetable(T,fileID,'Delimiter',',')
