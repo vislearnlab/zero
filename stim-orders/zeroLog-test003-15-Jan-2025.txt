@@ -1,0 +1,16 @@
+test003,timestamp
+15-Jan-2025, 
+experiment start ,14:38:04
+ , 
+rolodex,14:38:05
+shoe horn,14:38:23
+hand mixer,14:38:47
+floppy disk,14:38:47
+bulb planter,14:38:48
+crank flashlight,14:38:48
+stethoscope,14:38:48
+french press,14:38:49
+fishing reel,14:38:49
+three-hole punch,14:38:50
+pocket radio,14:38:50
+blood pressure cuff,14:38:51

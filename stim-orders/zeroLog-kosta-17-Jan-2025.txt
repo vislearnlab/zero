@@ -1,0 +1,16 @@
+kosta,timestamp
+17-Jan-2025, 
+experiment start ,11:32:47
+ , 
+fishing reel,11:32:47
+three-hole punch,11:35:38
+french press,11:36:30
+rolodex,11:37:41
+crank flashlight,11:39:41
+hand mixer,11:41:25
+pocket radio,11:42:24
+blood pressure cuff,11:44:25
+stethoscope,11:45:58
+floppy disk,11:48:05
+bulb planter,11:49:21
+shoe horn,11:50:40
