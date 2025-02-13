@@ -27,7 +27,7 @@ set(f,'MenuBar','none')
 set(f,'ToolBar','none')
 set(f,'Color','black')
 
-for trialNum = 1%:length(objectNameSet)
+for trialNum = 1:5%length(objectNameSet)
 
     % KNOWLEDGE BLOCK 1
     timingStruct.(['trial' num2str(trialNum)]).KnowledgeBlock1 = ...
@@ -46,7 +46,6 @@ for trialNum = 1%:length(objectNameSet)
     timingStruct.(['trial' num2str(trialNum)]).textBlock = ...
         textBlock(textString);
 
-    
     % EXPLORATION BLOCK 2
     timingStruct.(['trial' num2str(trialNum)]).ExploreBlock2 = ...
         exploreBlock();
