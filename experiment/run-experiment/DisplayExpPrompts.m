@@ -44,7 +44,7 @@ for trialNum = 1%:length(objectNameSet)
     % TEXT ("LEARN FROM SOMEONE") BLOCK
     textString = objectTable.description(thisOrder(trialNum));
     timingStruct.(['trial' num2str(trialNum)]).textBlock = ...
-        textBlock(textString);
+        textBlock(objectNameSet(thisOrder(trialNum)),textString);
 
     
     % EXPLORATION BLOCK 2

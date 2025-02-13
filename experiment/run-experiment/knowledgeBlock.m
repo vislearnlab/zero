@@ -43,7 +43,8 @@ for promptNum = 1:length(textToDisplay)
     set(gca,'visible','off','xlim',[0 2],'ylim',[0 2],'Position',[0 0 1 1]) ;
 
     timesKeyPressed = [timesKeyPressed; waitForPress];
-
+    
+    delete(objHeader)
     delete(promptText)
 end
 
