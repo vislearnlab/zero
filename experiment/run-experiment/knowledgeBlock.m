@@ -47,7 +47,6 @@ for promptNum = 1:length(textToDisplay)
     delete(promptText)
 end
 
-delete(objHeader)
 
 keyPressTimes.Appearance.Start = timesKeyPressed(3,:);
 keyPressTimes.Appearance.Stop = timesKeyPressed(4,:);
