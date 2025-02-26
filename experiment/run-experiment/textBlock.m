@@ -24,7 +24,7 @@ delete(promptText)
 % Provide the descriptive blurb for each object in small chunks, and let
 % people advance through at their own pace
 
-chunkLength = 8;
+chunkLength = 7;
 textString = split(textString,' '); % separate paragraph string at word spaces 
 lineStarts = 1:chunkLength:length(textString);
 
@@ -57,10 +57,11 @@ for topLineStart = 1:5:length(lineStarts)
     
     timesKeyPressed = [timesKeyPressed; waitForPress];
     delete(promptText)
+    delete(objHeader)
 
 end
 
-delete(objHeader)
+
 
 keyPressTimes.Start = timesKeyPressed(2,:);
 keyPressTimes.Stop = timesKeyPressed(end,:);

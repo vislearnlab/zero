@@ -12,16 +12,16 @@ textToDisplay = ...
     'Describe how this object typically looks and what it is made of';... %(#3)
     '+';... % blank screen during talking (#4)
     'Describe how this object works and what it is used for';... %(#5)
-    '+';... % blank screen during talking (#6)
-    'Describe the kind of person who might own or use this object';... %(#7)
+    %'+';... % blank screen during talking (#6)
+    %'Describe the kind of person who might own or use this object';... %(#7)
     '+';}; % blank screen during talking (#8)
 
 % Instructions / intro
 if blockNum ==1
-    knowInst = 'Describe what you know about each object.';
+    knowInst = 'Describe what you know about this object:';
     
 elseif blockNum ==2
-    knowInst = {'Describe what you know about each object.';...
+    knowInst = {'Describe what you know about this object.';...
         'Be as thorough as you can.';...
         'It is OK to repeat the things you said previously.'};
 end
@@ -53,6 +53,6 @@ keyPressTimes.Appearance.Start = timesKeyPressed(3,:);
 keyPressTimes.Appearance.Stop = timesKeyPressed(4,:);
 keyPressTimes.Function.Start = timesKeyPressed(5,:);
 keyPressTimes.Function.Stop = timesKeyPressed(6,:);
-keyPressTimes.Social.Start = timesKeyPressed(7,:);
-keyPressTimes.Social.Stop = timesKeyPressed(8,:);
+%keyPressTimes.Social.Start = timesKeyPressed(7,:);
+%keyPressTimes.Social.Stop = timesKeyPressed(8,:);
 

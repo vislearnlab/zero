@@ -13,7 +13,7 @@ objectTable = readtable('zero/experiment/run-experiment/object_descriptions.csv'
 objectTable.object_name_spaced = cellfun(@(x) strrep(x,'_',' '),objectTable.object_name,'UniformOutput',false);
 objectNameSet = objectTable.object_name_spaced;
 
-thisOrder = randperm(length(objectNameSet));
+thisOrder = [1 randperm(length(objectNameSet)-1)+1]; % make SCISSORS appear first across all participants
 
 printList = [extractBefore(dateStrings, ' '); 'experiment start ' ; ' '; objectNameSet(thisOrder)];
 %timeList = {' '; extractAfter(dateStrings, ' '); ' '};
@@ -27,7 +27,7 @@ set(f,'MenuBar','none')
 set(f,'ToolBar','none')
 set(f,'Color','black')
 
-for trialNum = 1%:length(objectNameSet)
+for trialNum = 1:length(objectNameSet)
 
     % KNOWLEDGE BLOCK 1
     timingStruct.(['trial' num2str(trialNum)]).KnowledgeBlock1 = ...
