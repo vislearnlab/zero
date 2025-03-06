@@ -45,7 +45,6 @@ for trialNum = 1:length(objectNameSet)
     textString = objectTable.description(thisOrder(trialNum));
     timingStruct.(['trial' num2str(trialNum)]).textBlock = ...
         textBlock(objectNameSet(thisOrder(trialNum)),textString);
-
     
     % EXPLORATION BLOCK 2
     timingStruct.(['trial' num2str(trialNum)]).ExploreBlock2 = ...
