@@ -27,7 +27,7 @@ for fixNum = 1:height(fixDataSubset) % for each fixation (row)
 end
 
 % Make the array for gaze tiles
-gazeTileArray = cell([1 height(frameInds)]); %nan(200,200,3,height(frameInds));
+gazeTileArray = cell([]); %nan(200,200,3,height(frameInds));
 
 for thisFrameInd = 1:height(frameInds)
     if isnan(frameInds(thisFrameInd))
@@ -39,8 +39,9 @@ for thisFrameInd = 1:height(frameInds)
             gazeTileArray(1,thisFrameInd) = {nan(200,200,3)};
         else
             frame = read(v,frameInds(thisFrameInd));
+            frameInds(thisFrameInd)
             frame = (frame(rows,cols,:)); %imshow(frame)
-      
+
             gazeTileArray{1,thisFrameInd} = frame;
         end
     end
