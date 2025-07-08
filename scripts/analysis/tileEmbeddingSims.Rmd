@@ -1,0 +1,180 @@
+---
+title: "CCN Analyses 2025"
+output: html_document
+---
+
+
+```{r}
+library("tidyverse")
+library("dplyr")
+library("ggplot2")
+library(ggthemes)
+library(langcog)
+library(lme4)
+library(lmerTest)
+library(here)
+```
+
+Load CSV file with fixation similarity values & get object-level averages 
+```{r}
+simVals = read.table(file=here::here("data/preprocessed/fixEmbedSimilarityValuesAcrossSubs.csv"),header = TRUE, sep = ",")
+simVals$GazeBlock <- as.factor(simVals$GazeBlock)
+
+# copied this from bria
+simVals <- simVals %>%
+  ungroup() %>%
+  mutate(ObjectID = fct_reorder(ObjectID, FixSimVal))
+
+simValsWithAvg <- simVals %>%
+  group_by(ObjectID, GazeBlock) %>%
+  multi_boot_standard(col = 'FixSimVal')
+
+simValsFiltered <- filter(simVals,FixNum <11)
+```
+
+
+I tried normalizing fixation number within trials, and you still see the interaction in the lmer -- not perfect but I think reassuring?
+```{r}
+simVals <- simVals %>%
+  group_by(GazeBlock, SubjectID, ObjectID) %>%
+  mutate(FixNumNormalized = scale(FixNum))
+```
+
+```{r}
+between_subs_sim_model <- lmer(FixSimVal ~ GazeBlock * FixNum + (GazeBlock|ObjectID) + (GazeBlock|SubjectID), simVals) #simValsFiltered
+summary(between_subs_sim_model)
+```
+
+```{r}
+between_subs_sim_model <- lmer(FixSimVal ~ GazeBlock * FixNum + (GazeBlock|ObjectID) + (GazeBlock|SubjectID), simVals) #simValsFiltered
+summary(between_subs_sim_model)
+```
+
+
+```{r}
+simValsByFix <- simVals %>%
+  group_by(FixNum, ObjectID, GazeBlock) %>%
+  mutate(num_subs = length(unique(SubjectID))) %>%
+  filter(num_subs > 11) %>%
+  filter(FixNum<20) %>%
+  group_by(GazeBlock, SubjectID) %>%
+  multi_boot_standard(col = 'FixSimVal') 
+```
+
+```{r}
+ggplot(data=simValsByFix, aes(x=GazeBlock, y=scale(mean), col=SubjectID)) +
+  # geom_pointrange(aes(y=mean, ymin=ci_lower, ymax=ci_upper), alpha=.2) +
+  geom_point(aes(y=mean), alpha=1) +
+  geom_line(aes(group=SubjectID)) +
+  theme_few() +
+  theme(legend.position='none') +
+  ylab('Average similarity across participants (a.u.)') +
+  xlab('Block')
+```
+
+```{r}
+ggplot(data=simValsByFix, aes(x=FixNum, y=mean_sim_val, col=GazeBlock, size=num_subs)) +
+  geom_point(alpha=.1) +
+  geom_smooth(aes(group=GazeBlock,weight=num_subs), alpha=.01, method='lm') 
+  # facet_wrap(~ObjectID)
+
+```
+
+
+This helps you look at predicted vs actual values from your models in R
+```{r}
+# simVals$predicted <- predict(between_subs_sim_model)
+```
+
+
+This is the raw data plots we were looking at
+```{r}
+ggplot(data=simVals, aes(x=FixNum, y=FixSimVal, col=GazeBlock)) +
+  geom_point(alpha=.2) +
+  facet_wrap(~ObjectID)
+```
+
+Looking at object level variability with CIs across subjects
+```{r}
+simValsbyObject <- simVals %>%
+  group_by(GazeBlock, FixNum, ObjectID) %>%
+  multi_boot_standard(col='FixSimVal')
+
+simValsbySubject <- simVals %>%
+  group_by(GazeBlock, FixNum, SubjectID) %>%
+  summarize()
+  multi_boot_standard(col='FixSimVal')
+```
+
+These kinds of averages really don't pan out -- you need the interaction with time...
+```{r}
+simValsbySubject <- simVals %>%
+  group_by(GazeBlock, SubjectID) %>%
+  filter(FixNum<20) %>%
+  summarize(mean_sim_val = mean(FixSimVal)) %>%
+  group_by(GazeBlock) %>%
+  multi_boot_standard(col='mean_sim_val') 
+```
+
+Here's what I put in the channnel
+```{r}
+ggplot(simValsbyObject, aes(x=FixNum, y=mean, col=GazeBlock)) +
+  geom_pointrange(aes(y=mean, ymin=ci_lower, ymax=ci_upper), alpha=.2) +
+  geom_smooth(alpha=.1, method='lm') +
+  theme_few() +
+  facet_wrap(~ObjectID) +
+  ylab('Similarity of Fixated Content') +
+  xlab('Fixation number')
+```
+
+Same plot now for individual subjects
+```{r}
+ggplot(simValsbySubject, aes(x=FixNum, y=mean, col=GazeBlock)) +
+  geom_pointrange(aes(y=mean, ymin=ci_lower, ymax=ci_upper), alpha=.2) +
+  geom_smooth(alpha=.1, method='lm') +
+  theme_few() +
+  facet_wrap(~SubjectID) +
+  ylab('Similarity of Fixated Content') +
+  xlab('Fixation number')
+```
+
+Here's the raw data by subject plots
+```{r}
+ggplot(data=simVals, aes(x=FixNum, y=FixSimVal, col=GazeBlock)) +
+  geom_point(alpha=.2) +
+  facet_wrap(~SubjectID)
+```
+
+What happens if we only look at the first N fixations? (Here I picked 5)
+```{r}
+simVals = read.table("fixEmbedSimilarityValuesFirst5.csv",header = TRUE, sep = ",")
+simVals$GazeBlock <- as.factor(simVals$GazeBlock)
+
+# copied this from bria
+simVals <- simVals %>%
+  ungroup() %>%
+  mutate(ObjectID = fct_reorder(ObjectID, FixSimVal))
+
+simValsWithAvg <- simVals %>%
+  group_by(ObjectID, GazeBlock) %>%
+  multi_boot_standard(col = 'FixSimVal')
+```
+
+
+```{r}
+
+ggplot(data=simVals, aes(x=fct_reorder(ObjectID,FixSimVal), y=FixSimVal, color = GazeBlock, fill = GazeBlock)) +
+      geom_point(alpha=.1, position = position_dodge(width=.8)) + 
+      geom_pointrange(data=simValsWithAvg, aes(x=(ObjectID), y=mean, ymin = ci_lower, ymax=ci_upper, color = GazeBlock), position = position_dodge(width=.8)) +
+      theme_few() +
+      # ylim(0,800) +
+      # facet_wrap(~GazeBlock)
+      theme(axis.text.x=element_text(angle = 65,hjust=1)) +
+    theme(legend.position='none') +
+    xlab('Individual Subjects') +
+   ylab('Mean fixation count')
+
+```
+
+
+
