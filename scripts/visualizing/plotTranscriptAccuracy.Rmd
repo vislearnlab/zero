@@ -1,0 +1,202 @@
+---
+title: "Plot ZERO object description accuracy data"
+output: html_document
+date: "2025-07-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+Load the transcript accuracy file
+```{r}
+accuracyDF <- read.csv("~/Library/CloudStorage/GoogleDrive-amhaskins@ucsd.edu/My Drive/Projects/zero/data_public/participantDescriptionsByBlockEmbeddings_CosSim.csv")
+
+scaledVar <- (accuracyDF$cosine_similarity_to_gt - min(accuracyDF$cosine_similarity_to_gt)) / (max(accuracyDF$cosine_similarity_to_gt) - min(accuracyDF$cosine_similarity_to_gt))
+
+accuracyDF$accuracyScaled <- scaledVar
+accuracyDF$talk_block <- as.factor(accuracyDF$talk_block)
+
+```
+
+Explore top and bottom accuracy scores - are they sensible?
+
+```{r}
+top2 <- accuracyDF %>%
+  filter(talk_block == 1) %>%
+  group_by(object_name) %>%
+  slice_max(order_by = cosine_similarity_to_gt, n = 3, with_ties = TRUE)
+
+bottom2 <- accuracyDF %>%
+  filter(talk_block == 1) %>%
+  group_by(object_name) %>%
+  slice_min(order_by = cosine_similarity_to_gt, n = 3, with_ties = TRUE)
+
+top_bottom <- bind_rows(top2, bottom2)
+top_bottom$embedding <- NULL
+top_bottom$embedding_zscored <- NULL
+
+top_bottom <- top_bottom %>%
+  arrange(object_name)
+
+#write.csv(top_bottom, "topBottomAccuracyExamples.csv", row.names = FALSE)
+
+```
+
+Plot all the accuracy values, by object ID
+
+```{r}
+
+# Compute mean per subject × talk_block
+means_df <- accuracyDF %>%
+  group_by(object_name, talk_block) %>%
+  summarize(mean_accuracy = mean(accuracyScaled), .groups = "drop")
+
+# Turn object_name into a numeric x-position for plotting lines
+means_df <- means_df %>%
+  mutate(
+    x_pos = as.numeric(factor(object_name)) +
+            ifelse(talk_block == "1", -0.2, 0.2)  # manually dodge
+  )
+
+
+# Plot
+ggplot(accuracyDF, aes(x = object_name, y = accuracyScaled, color=talk_block, fill = talk_block)) +
+  # Transparent dotplot
+  geom_dotplot(
+    binaxis = "y",
+    stackdir = "center",
+    dotsize = 0.6,
+    binwidth = 0.04,
+    position = position_dodge(width = 0.8),
+    alpha = 0.3
+  ) +
+  # Mean lines (connecting each subject's two means)
+  geom_line(
+    data = means_df,
+    aes(x = x_pos, y = mean_accuracy, group = object_name),
+    color = "black",
+    linewidth = 0.9,
+    inherit.aes = FALSE
+  ) +
+  # Large black mean dots
+  geom_point(
+    data = means_df,
+    aes(x = object_name, y = mean_accuracy, color = talk_block),
+    #color = "black",
+    size = 5,
+    position = position_dodge(width = 0.8),
+    inherit.aes = FALSE
+    ) + 
+   geom_line(aes(x = object_name,y = accuracyScaled,  group=subject_name)) +
+  
+  # highlight IDKs
+  #geom_point(
+    #data = subset(accuracyDF, grepl("know", description, ignore.case = TRUE)),
+    #aes(x = object_name, y = accuracyScaled, group = talk_block),
+    #color = "black",
+    #shape = 0,
+    #size = 4,
+    #position = position_dodge(width = 0.8)
+   # ) +
+  
+  theme_minimal() + 
+  labs(
+    y = "Scaled Accuracy\n(Cosine Sim of Transcript & Passage Embedding", 
+    x = "Object ID"
+  )
+
+
+```
+Plot all the accuracy values, by subject ID
+
+```{r}
+
+# Compute mean per subject × talk_block
+means_df <- accuracyDF %>%
+  group_by(subject_name, talk_block) %>%
+  summarize(mean_accuracy = mean(accuracyScaled), .groups = "drop")
+
+# Turn subject_name into a numeric x-position for plotting lines
+means_df <- means_df %>%
+  mutate(
+    x_pos = as.numeric(factor(subject_name)) +
+            ifelse(talk_block == "1", -0.2, 0.2)  # manually dodge
+  )
+
+
+# Plot
+ggplot(accuracyDF, aes(x = subject_name, y = accuracyScaled, color=talk_block, fill = talk_block)) +
+  # Transparent dotplot
+  geom_dotplot(
+    binaxis = "y",
+    stackdir = "center",
+    dotsize = 0.6,
+    binwidth = 0.04,
+    position = position_dodge(width = 0.8),
+    alpha = 0.3
+  ) +
+  # Mean lines (connecting each subject's two means)
+  geom_line(
+    data = means_df,
+    aes(x = x_pos, y = mean_accuracy, group = subject_name),
+    color = "black",
+    linewidth = 0.9,
+    inherit.aes = FALSE
+  ) +
+  
+    geom_line(
+    aes(x = talk_block, y = accuracyScaled, group = subject_name),
+    color = "gray",
+    linewidth = 0.6,
+    inherit.aes = FALSE
+  ) +
+  # Large black mean dots
+  geom_point(
+    data = means_df,
+    aes(x = subject_name, y = mean_accuracy, color = talk_block),
+    #color = "black",
+    size = 5,
+    position = position_dodge(width = 0.8),
+    inherit.aes = FALSE
+    ) + 
+  theme_minimal() + 
+  labs(
+    y = "Scaled Accuracy\n(Cosine Sim of Transcript & Passage Embedding", 
+    x = "Subject ID"
+  )
+```
+Are longer transcripts calculated as more accurate? 
+
+```{r}
+# Compute description lengths and mean by subject
+accuracyDF <- accuracyDF %>%
+  mutate(descriptionLength = sapply(strsplit(description, " "), length))
+
+ggplot(accuracyDF, aes(x = descriptionLength, y = accuracyScaled, color = talk_block, fill = talk_block)) +
+  
+  # Mean lines (connecting each subject's two means)
+  geom_smooth(
+    data = accuracyDF[accuracyDF$descriptionLength < 200, ],
+    method = "lm", se = FALSE, linewidth = 1) +
+
+  # Scatter points
+  geom_point(
+    data = accuracyDF[accuracyDF$descriptionLength < 200, ],
+    aes(x = descriptionLength, y = accuracyScaled, color = talk_block),
+    size = 3,
+    alpha = 0.4,
+    inherit.aes = FALSE
+  ) +
+  
+  theme_minimal() + 
+  labs(
+    y = "Scaled Accuracy\n(Cosine Sim of Transcript & Passage Embedding", 
+    x = "Description word count"
+  )
+
+
+
+
+```
