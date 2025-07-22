@@ -8,13 +8,13 @@ textInst = {'Now you will read a paragraph about this object.';...
             'See if you can learn anything new from this description.';...
             'Press the arrow to advance through the paragraph.'};
 
-promptText = text(1,1,textInst(1:2),'FontSize',40,'Color','white','HorizontalAlignment','center','VerticalAlignment','middle') ;
+promptText = text(1,1,textInst(1:2),'FontSize',32,'Color','white','HorizontalAlignment','center','VerticalAlignment','middle') ;
 set(gca,'visible','off','xlim',[0 2],'ylim',[0 2],'Position',[0 0 1 1]) ;
 
 timesKeyPressed = [timesKeyPressed; waitForPress]; % press 1
 delete(promptText)
 
-promptText = text(1,1,textInst(3),'FontSize',40,'Color','white','HorizontalAlignment','center','VerticalAlignment','middle') ;
+promptText = text(1,1,textInst(3),'FontSize',32,'Color','white','HorizontalAlignment','center','VerticalAlignment','middle') ;
 set(gca,'visible','off','xlim',[0 2],'ylim',[0 2],'Position',[0 0 1 1]) ;
 
 timesKeyPressed = [timesKeyPressed; waitForPress]; % press 2 - this is the start of reading
@@ -49,10 +49,10 @@ for topLineStart = 1:5:length(lineStarts)
 
 
     % display object name on top
-    objHeader = text(1,1.75,objectName,'FontSize',120,'Color','white','HorizontalAlignment','center','VerticalAlignment','top') ;
+    objHeader = text(1,1.75,objectName,'FontSize',100,'Color','white','HorizontalAlignment','center','VerticalAlignment','top') ;
     set(gca,'visible','off','xlim',[0 2],'ylim',[0 2],'Position',[0 0 1 1]) ;
 
-    promptText = text(1,1,thisChunk,'FontSize',40,'Color','white','HorizontalAlignment','center','VerticalAlignment','middle') ;
+    promptText = text(1,1,thisChunk,'FontSize',32,'Color','white','HorizontalAlignment','center','VerticalAlignment','middle') ;
     set(gca,'visible','off','xlim',[0 2],'ylim',[0 2],'Position',[0 0 1 1]) ;
     
     timesKeyPressed = [timesKeyPressed; waitForPress];
