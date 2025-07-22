@@ -36,7 +36,7 @@ for trialNum = 1:length(objectNameSet)
 
     % EXPLORATION BLOCK 1
     timingStruct.(['trial' num2str(trialNum)]).ExploreBlock1 = ...
-        exploreBlock();
+        exploreBlock(1);
 
     % KNOWLEDGE BLOCK 2
     timingStruct.(['trial' num2str(trialNum)]).KnowledgeBlock2 = ...
@@ -49,7 +49,7 @@ for trialNum = 1:length(objectNameSet)
     
     % EXPLORATION BLOCK 2
     timingStruct.(['trial' num2str(trialNum)]).ExploreBlock2 = ...
-        exploreBlock();
+        exploreBlock(2);
     
 
 end

@@ -1,4 +1,4 @@
-function [keyPressTimes] = exploreBlock()
+function [keyPressTimes] = exploreBlock(blockNum)
 
 keyPressTimes = struct;
 timesKeyPressed = []; % empty holder
@@ -19,7 +19,16 @@ set(gca,'visible','off','xlim',[0 2],'ylim',[0 2],'Position',[0 0 1 1]) ;
 timesKeyPressed = [timesKeyPressed; waitForPress];
 delete(promptText)
 
+if blockNum == 2 % second explore block
 
+    promptText = text(1,1,{'You are finished with this object trial.'; ...
+        'Get ready for a new object.'},'FontSize',40,'Color','white',...
+        'HorizontalAlignment','center','VerticalAlignment','middle') ;
+    set(gca,'visible','off','xlim',[0 2],'ylim',[0 2],'Position',[0 0 1 1]) ;
+    
+    timesKeyPressed = [timesKeyPressed; waitForPress];
+    delete(promptText)
+end
 
 keyPressTimes.Start = timesKeyPressed(1,:);
 keyPressTimes.Stop = timesKeyPressed(2,:);
