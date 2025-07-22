@@ -26,6 +26,7 @@ f = figure('WindowState','maximized','NumberTitle','off');
 set(f,'MenuBar','none')
 set(f,'ToolBar','none')
 set(f,'Color','black')
+set(f,'DefaultTextFontSize', 14)
 
 for trialNum = 1:length(objectNameSet)
 

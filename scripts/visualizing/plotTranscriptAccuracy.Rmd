@@ -146,12 +146,6 @@ ggplot(accuracyDF, aes(x = subject_name, y = accuracyScaled, color=talk_block, f
     inherit.aes = FALSE
   ) +
   
-    geom_line(
-    aes(x = talk_block, y = accuracyScaled, group = subject_name),
-    color = "gray",
-    linewidth = 0.6,
-    inherit.aes = FALSE
-  ) +
   # Large black mean dots
   geom_point(
     data = means_df,

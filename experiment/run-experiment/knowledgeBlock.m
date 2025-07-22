@@ -26,7 +26,7 @@ elseif blockNum ==2
         'It is OK to repeat the things you said previously.'};
 end
 
-promptText = text(1,1,knowInst,'FontSize',50,'Color','white','HorizontalAlignment','center','VerticalAlignment','middle') ;
+promptText = text(1,1,knowInst,'FontSize',40,'Color','white','HorizontalAlignment','center','VerticalAlignment','middle') ;
 set(gca,'visible','off','xlim',[0 2],'ylim',[0 2],'Position',[0 0 1 1]) ;
 waitForPress;
 delete(promptText)
@@ -39,7 +39,7 @@ for promptNum = 1:length(textToDisplay)
     set(gca,'visible','off','xlim',[0 2],'ylim',[0 2],'Position',[0 0 1 1]) ;
 
     % with additional text at center
-    promptText = text(1,1,textToDisplay(promptNum),'FontSize',50,'Color','white','HorizontalAlignment','center','VerticalAlignment','middle') ;
+    promptText = text(1,1,textToDisplay(promptNum),'FontSize',40,'Color','white','HorizontalAlignment','center','VerticalAlignment','middle') ;
     set(gca,'visible','off','xlim',[0 2],'ylim',[0 2],'Position',[0 0 1 1]) ;
 
     timesKeyPressed = [timesKeyPressed; waitForPress];

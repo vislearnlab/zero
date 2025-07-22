@@ -43,9 +43,11 @@ end
 
 humanAccAvg = mean([newSubsetTable.HumanAcc1(newSubsetTable.TalkBlock == 1) newSubsetTable.HumanAcc2(newSubsetTable.TalkBlock == 1)],2);
 a = corrcoef(humanAccAvg,newSubsetTable.AutoAcc(newSubsetTable.TalkBlock == 1));
+% inter-rater
+b = corrcoef(newSubsetTable.HumanAcc1(newSubsetTable.TalkBlock == 1),newSubsetTable.HumanAcc2(newSubsetTable.TalkBlock == 1));
 
 figure;
 scatter(humanAccAvg,newSubsetTable.AutoAcc(newSubsetTable.TalkBlock == 1),'filled')
-title(['Talk Block 1 human-auto correlation: ' num2str(a(2,1))])
+title(['Talk Block 1 human-human correlation: ' num2str(b(2,1))])
 xlabel('Mean Human Rating')
 ylabel('Auto accuracy score')
