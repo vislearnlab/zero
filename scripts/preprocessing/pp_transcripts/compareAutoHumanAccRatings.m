@@ -11,7 +11,7 @@ ratingsFile = readtable([projectDir ...
 
 % Load the CSV that contains the automated descriptions
 automatedFile = readtable([projectDir ...
-    'data_public/participantDescriptionsByBlockEmbeddings_CosSim.csv'],'Delimiter',',');
+    'data_public/participantDescriptionsByBlockEmbeddings_CosSimBERT.csv'],'Delimiter',',');
 
 % Create a table/CSV combining automated vs. human-rated accuracy on subset
 
@@ -84,4 +84,4 @@ for thisDescription = 1:height(ratingsFile)
 end
 
 writetable(automatedFile,[projectDir ...
-    'data_public/participantDescriptionAccuracy_072225.csv'],'Delimiter',',');
+    'data_public/participantDescriptionAccuracyBERT.csv'],'Delimiter',',');
